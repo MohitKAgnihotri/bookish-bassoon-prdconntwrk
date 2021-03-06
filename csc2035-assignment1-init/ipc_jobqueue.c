@@ -8,7 +8,7 @@
  * DO NOT EDIT the ipc_jq_new function.
  */
 ipc_jobqueue_t* ipc_jq_new(proc_t* proc) {
-    ipc_jobqueue_t* ijq = ipc_new(proc, "ipc_jobqueue", sizeof(jobqueue_t));
+    ipc_jobqueue_t* ijq = ipc_new(proc, "ipc_jobq", sizeof(jobqueue_t));
     
     if (!ijq) 
         return NULL;

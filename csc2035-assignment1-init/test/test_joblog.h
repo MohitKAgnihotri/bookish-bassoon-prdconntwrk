@@ -15,7 +15,11 @@ static MunitResult test_jlog_init(const MunitParameter params[],
     void* fixture);
 static MunitResult test_jlog_write_entry(const MunitParameter params[],
     void* fixture);
+static MunitResult test_jlog_write_entry_err(const MunitParameter params[], 
+    void* fixture); 
 static MunitResult test_jlog_read_entry(const MunitParameter params[],
+    void* fixture);
+static MunitResult test_jlog_read_entry_err(const MunitParameter params[],
     void* fixture);
 static MunitResult test_jlog_delete(const MunitParameter params[], 
     void* fixture);
@@ -25,7 +29,11 @@ static MunitTest tests[] = {
         MUNIT_TEST_OPTION_NONE, NULL },
     { "/test_jlog_write_entry", test_jlog_write_entry, test_setup,
         test_tear_down, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/test_jlog_write_entry_err", test_jlog_write_entry_err, test_setup,
+        test_tear_down, MUNIT_TEST_OPTION_NONE, NULL },
     { "/test_jlog_read_entry", test_jlog_read_entry, test_setup,
+        test_tear_down, MUNIT_TEST_OPTION_NONE, NULL },
+    { "/test_jlog_read_entry_err", test_jlog_read_entry_err, test_setup,
         test_tear_down, MUNIT_TEST_OPTION_NONE, NULL },
     { "/test_jlog_delete", test_jlog_delete, test_setup, test_tear_down,
         MUNIT_TEST_OPTION_NONE, NULL },

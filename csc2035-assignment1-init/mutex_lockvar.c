@@ -11,7 +11,7 @@
  * DO NOT EDIT the mu_new function.
  */
 mutex_t* mu_new(proc_t* proc) {
-    return ipc_new(proc, "mutex_lockvar", sizeof(mutex_lockvar_t));
+    return ipc_new(proc, "mux_lockvar", sizeof(mutex_lockvar_t));
 }
 
 /* 

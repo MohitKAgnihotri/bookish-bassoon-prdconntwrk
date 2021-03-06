@@ -103,11 +103,11 @@ typedef struct jobqueue {
  * jq - a non-null pointer to a jobqueue to initialise
  *
  * Errors:
- * If the call fails, the NULL pointer will be returned and errno will be 
- * set as specified by system library dynamic memory allocation functions.
+ * If jq is NULL a memory error will occur and the calling process will 
+ * terminate. It is the responsibility of the programmer calling the function
+ * to ensure that jq is not NULL.
  *
  * See also:
- * job.h - for a description of the job type
  * ipc_jobqueue - for further information on usage of jq_init
  */
 void jq_init(jobqueue_t* jq);
@@ -205,7 +205,7 @@ size_t jq_capacity(jobqueue_t* jq);
  * If the queue was not empty, after the return of this function, the 
  * job at what was the head position will have been set to the unused entry and
  * the head position will have been advanced to the next job (which may result
- * in any empty queue).
+ * in an empty queue).
  *
  * Errors:
  * If jq is NULL a memory error will occur and the calling process will 
@@ -239,8 +239,10 @@ job_t jq_dequeue(jobqueue_t* jq);
  *      jobqueue_t* jq = jq_new();    
  *      ...
  *      ...
- *      while (!jq_is_full(jq)) {      // enqueue jobs as long as the queue is 
- *          job_t j = jq_enqueue(jq);  // not full
+ *      job_t j = { 0, 1 };
+ *      while (!jq_is_full(jq)) {       // enqueue jobs as long as the queue is 
+ *          jq_enqueue(jq, j);          // not full
+ *          j.id++;
  *          ...
  *          ...
  *      }
@@ -271,8 +273,13 @@ void jq_enqueue(jobqueue_t* jq, job_t j);
  *      jobqueue_t* jq = jq_new(); 
  *      ...
  *      ...
- *      while (!jq_is_full(jq))      // queue jobs as long as the queue is 
- *          jq_enqueue(jq, job);     // not full
+ *      job_t j = { 0, 1 };
+ *      while (!jq_is_full(jq)) {       // enqueue jobs as long as the queue is 
+ *          jq_enqueue(jq, j);          // not full
+ *          j.id++;
+ *          ...
+ *          ...
+ *      }
  *      ...
  *      ...
  *      jq_delete(jq);  

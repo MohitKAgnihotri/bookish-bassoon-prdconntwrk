@@ -15,7 +15,7 @@
 #define SEM         04
 #define NAME_MASK   03
 
-#define NBUF 64
+#define NBUF 32
 
 int get_selector(int argc, char** argv) {
     int r = argc - 1;
@@ -25,7 +25,7 @@ int get_selector(int argc, char** argv) {
 }
 
 char* get_name(const char* label) {
-    static const char* fmt = "/csc2035.%s.%s";
+    static const char* fmt = "/csc2035.%.9s.%s";
     const char* al = label && label[0] ? label : "none";
 
     char* user = getenv("USER");

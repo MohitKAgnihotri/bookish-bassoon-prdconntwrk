@@ -96,7 +96,7 @@ static MunitResult test_cpid_jlog_read_entry(int cp_id) {
         snprintf(wentry[i], JOBLOG_ENTRY_SIZE, ENTRY_FORMAT, i);
         fprintf(lf, "%s\n", wentry[i]);
     }
-
+    
     fclose(lf);
     
     errno = 0;
@@ -175,7 +175,12 @@ static MunitResult test_jlog_write_entry(const MunitParameter params[],
         if (r != MUNIT_OK)
             break;        
     }
-    
+
+    return r;
+}
+
+static MunitResult test_jlog_write_entry_err(const MunitParameter params[], 
+    void* fixture) {
     errno = 0;
     
     job_t j = {0, 0};
@@ -191,8 +196,8 @@ static MunitResult test_jlog_write_entry(const MunitParameter params[],
     assert_int(errno, ==, 0);
     
     proc_delete(proc);
-        
-    return r;
+
+    return MUNIT_OK;
 }
 
 static MunitResult test_jlog_read_entry(const MunitParameter params[],
@@ -206,6 +211,11 @@ static MunitResult test_jlog_read_entry(const MunitParameter params[],
             break;
     }
     
+    return r;  
+}
+
+static MunitResult test_jlog_read_entry_err(const MunitParameter params[],
+    void* fixture) {
     errno = 0;
     
     char* x = jlog_read_entry(NULL, 0);
@@ -221,8 +231,8 @@ static MunitResult test_jlog_read_entry(const MunitParameter params[],
     assert_int(errno, ==, 0);
     
     proc_delete(proc);
-
-    return r;  
+    
+    return MUNIT_OK;
 }
 
 static MunitResult test_jlog_delete(const MunitParameter params[],

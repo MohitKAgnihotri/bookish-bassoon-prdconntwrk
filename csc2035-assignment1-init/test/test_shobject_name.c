@@ -43,10 +43,23 @@ static MunitResult test_shobject_name(const MunitParameter params[],
     assert_shobject_name(NULL, NULL);
     
     assert_shobject_name("a", NULL);
+
+    char* user = getenv("USER");
+
+    int user_len = strnlen(user, 9);
+    int chars_left = MAX_SHOBJ_NAME_SIZE - 1 - user_len - 10;
+    
+    char expected_label[chars_left + 1];
+    
+    int i;
+    for (i = 0; i < chars_left + 1; i++)
+        expected_label[i] = 'x';
+    
+    expected_label[i] = '\0';
     
     assert_shobject_name("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 
-        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");    // 
-                
+        expected_label);  
+        
     return MUNIT_OK;
 }   

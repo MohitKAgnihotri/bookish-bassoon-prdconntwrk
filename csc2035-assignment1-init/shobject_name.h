@@ -2,8 +2,8 @@
 #ifndef _SHOBJECT_NAME_H
 #define _SHOBJECT_NAME_H
 
-#define MAX_SHOBJ_NAME_SIZE 64
-#define SHOBJ_NAME_FORMAT "/csc2035.%s.%s"  // "/csc2035.<user>.<label>"
+#define MAX_SHOBJ_NAME_SIZE 32
+#define SHOBJ_NAME_FORMAT "/csc2035.%.9s.%s"  // "/csc2035.<user>.<label>"
 
 /*
  * shobject_name(char* name_buf, const char* label)
