@@ -18,5 +18,15 @@
  *      environment (use "anon" if the function returns NULL)
  */
 void shobject_name(char* name_buf, const char* label) {
+
+    char* user = getenv("USER");
+    if (!user) user = "anon";
+
+    if (!label || !label[0])
+        label = "none";
+
+    snprintf(name_buf, MAX_SHOBJ_NAME_SIZE, SHOBJ_NAME_FORMAT,
+             user, label);
+
     return;
 }

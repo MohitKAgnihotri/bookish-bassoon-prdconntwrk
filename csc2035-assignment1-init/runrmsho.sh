@@ -14,7 +14,7 @@
 RM=rmsho
 
 function rmshm {
-    for i in none ipc_jobqueue mutex_lockvar mutex_peterson test_ipc
+    for i in none ipc_jobq mux_lockvar mux_peters test_ipc
     do
         ./$RM $i
     done

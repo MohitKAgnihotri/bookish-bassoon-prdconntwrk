@@ -16,7 +16,7 @@
  * - also see: mutex_peterson.h, mutex_lockvar.c and ipc.h
  */
 mutex_t* mu_new(proc_t* proc) {
-    return NULL;
+    return ipc_new(proc, "mutex_peterson", sizeof(mutex_peterson_t));
 }
 
 /* 

@@ -24,6 +24,11 @@ mutex_t* mu_new(proc_t* proc) {
  *      shared memory is at the addr field of the ipc object (see ipc.h)
  */
 void mu_enter(mutex_t* mux) {
+    if (!mux) return;
+
+    mutex_lockvar_t* lock = (mutex_lockvar_t*) mux->addr;
+
+    *lock = 1;
     return;
 }
 
@@ -44,7 +49,9 @@ void mu_leave(mutex_t* mux) {
  * - look at how the mutex is allocated in mu_new
  */
 void mu_delete(mutex_t* mux) {
-    return;
+    if (!mux) return;
+    ipc_delete(mux);
+    mux = NULL;
 }
 
 
