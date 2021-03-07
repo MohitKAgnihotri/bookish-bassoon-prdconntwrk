@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <string.h>
 #include "joblog.h"
 
 // DO NOT EDIT the following definitions
@@ -83,7 +84,14 @@ int jlog_init(proc_t* proc) {
  * - remember to append new entries to the log file
  */
 void jlog_write_entry(proc_t* proc, job_t* job) {
-    return;
+    if (!proc || !job)
+        return;
+    FILE *fp = fopen(new_log_name(proc), "a");
+    if (fp)
+    {
+        fprintf(fp,"%05dp%02d\n",job->id,job->pid);
+        fclose(fp);
+    }
 }
 
 /* 
@@ -96,12 +104,52 @@ void jlog_write_entry(proc_t* proc, job_t* job) {
  *      for the string (constants have been defined to help you)
  */
 char* jlog_read_entry(proc_t* proc, int entry_num) {
-    return NULL;
+
+    if (!proc || entry_num < 0)
+    {
+        errno = 0;
+        return NULL;
+    }
+
+    char *line_read = NULL;
+    char *filename = new_log_name(proc);
+    if (filename)
+    {
+        int count = -1;
+        char line[16]; /* or other suitable maximum line size */
+
+        FILE *fp = fopen(filename, "r");
+        if (fp) {
+            while (fgets(line, sizeof line, fp) != NULL) /* read a line */
+            {
+                count++;
+                if (count == entry_num)
+                {
+                    line_read = (char*)malloc(sizeof(char) * strlen(line) + 1);
+                    memcpy(line_read, line, strlen(line) + 1);
+                    line_read[strcspn(line_read, "\r\n")] = '\0';
+                    break;
+                }
+            }
+            fclose(fp);
+        }
+    }
+
+    errno = 0;
+    return line_read;
 }
 
 /* 
  * TODO: you must implement this function.
  */
-void jlog_delete(proc_t* proc) {
+void jlog_delete(proc_t* proc)
+{
+    if (!proc) return;
+    char * filename = new_log_name(proc);
+    if (filename)
+    {
+        unlink (filename);
+    }
+    errno = 0;
     return;
 }

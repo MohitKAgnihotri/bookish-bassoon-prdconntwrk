@@ -27,8 +27,6 @@ ipc_jobqueue_t* ipc_jq_new(proc_t* proc) {
  *      jobqueue by passing it to a function defined in jobqueue.h)
  */
 size_t ipc_jq_capacity(ipc_jobqueue_t* ijq) {
-    if (!ijq)
-        return NULL;
     return jq_capacity((jobqueue_t*) ijq->addr);
 }
 
