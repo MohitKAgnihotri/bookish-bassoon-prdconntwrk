@@ -25,14 +25,15 @@ void jq_init(jobqueue_t* jq) {
  * initialise it.
  */
 jobqueue_t* jq_new() {
-    return NULL;
+    jobqueue_t* newjq = (jobqueue_t*) malloc(sizeof(jobqueue_t));
+    return newjq;
 }
 
 /* 
  * TODO: you must implement this function.
  */
 size_t jq_capacity(jobqueue_t* jq) {
-    return 0;
+    return jq->buf_size;
 }
 
 /* 
@@ -98,5 +99,5 @@ job_t jq_peektail(jobqueue_t* jq) {
  * TODO: you must implement this function.
  */
 void jq_delete(jobqueue_t* jq) {
-    return;
+    free(jq);
 }

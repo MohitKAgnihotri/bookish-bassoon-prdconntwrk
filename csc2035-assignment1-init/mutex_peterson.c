@@ -32,6 +32,12 @@ mutex_t* mu_new(proc_t* proc) {
  * - also see: mutex_lockvar.c
  */
 void mu_enter(mutex_t* mux) {
+    if (!mux) return;
+    mutex_peterson_t *mux_pet = (mutex_peterson_t *) mux->addr;
+    int self = mux->proc->id % 2;
+    mux_pet->interested[self] = 1;
+    mux_pet->turn = mux->proc->id;
+    while((mux_pet->interested[1-self]==1) && (mux_pet->turn==mux->proc->id));
     return;
 }
 
@@ -40,6 +46,9 @@ void mu_enter(mutex_t* mux) {
  * Hints: see hints for mu_enter
  */
 void mu_leave(mutex_t* mux) {
+    if (!mux) return;
+    mutex_peterson_t *mux_pet = (mutex_peterson_t *) mux->addr;
+    mux_pet->interested[mux->proc->id %2 ] = 0;
     return;
 }
 
@@ -49,5 +58,7 @@ void mu_leave(mutex_t* mux) {
  * - deallocate what you allocate in mu_new
  */
 void mu_delete(mutex_t* mux) {
-   return;
+    if (!mux) return;
+    ipc_delete(mux);
+    mux = NULL;
 }
