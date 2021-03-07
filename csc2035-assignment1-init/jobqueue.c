@@ -26,6 +26,7 @@ void jq_init(jobqueue_t* jq) {
  */
 jobqueue_t* jq_new() {
     jobqueue_t* newjq = (jobqueue_t*) malloc(sizeof(jobqueue_t));
+    jq_init(newjq);
     return newjq;
 }
 
@@ -33,7 +34,7 @@ jobqueue_t* jq_new() {
  * TODO: you must implement this function.
  */
 size_t jq_capacity(jobqueue_t* jq) {
-    return jq->buf_size;
+    return jq->buf_size - 1;
 }
 
 /* 
@@ -45,7 +46,16 @@ size_t jq_capacity(jobqueue_t* jq) {
  *      Remember to mark the queue slot at the position as unused 
  */
 job_t jq_dequeue(jobqueue_t* jq) {
-    return UNUSED_ENTRY;
+    job_t dequeued_job = {0,0};
+    if (jq_is_empty(jq))
+        return UNUSED_ENTRY;
+    else
+    {
+        dequeued_job = jq->jobs[jq->head];
+        jq->jobs[jq->head] = UNUSED_ENTRY;
+        jq->head = (jq->head + 1) % jq->buf_size;
+        return dequeued_job;
+    }
 }
 
 /* 
@@ -70,8 +80,16 @@ bool jq_is_empty(jobqueue_t* jq) {
 /* 
  * TODO: you must implement this function.
  */
-bool jq_is_full(jobqueue_t* jq) {
-    return false;
+bool jq_is_full(jobqueue_t *jq) {
+    if ((jq->head == 0 && jq->tail == jq->buf_size - 1) ||
+        (jq->head > 0 && jq->tail == jq->head - 1))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 /* 
@@ -92,7 +110,14 @@ job_t jq_peekhead(jobqueue_t* jq) {
  *      behind element 0 in the buffer etc
  */
 job_t jq_peektail(jobqueue_t* jq) {
-    return UNUSED_ENTRY;
+    if (jq->head == jq->tail)
+        return UNUSED_ENTRY;
+    else {
+        if (jq->tail == 0) // we have just wrapped around.
+            return jq->jobs[jq->buf_size - 1];
+        else // return one entry before the tail position.
+            return jq->jobs[jq->tail - 1];
+    }
 }
 
 /* 
@@ -100,4 +125,5 @@ job_t jq_peektail(jobqueue_t* jq) {
  */
 void jq_delete(jobqueue_t* jq) {
     free(jq);
+    jq = NULL;
 }
