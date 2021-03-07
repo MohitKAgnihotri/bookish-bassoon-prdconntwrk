@@ -27,7 +27,9 @@ ipc_jobqueue_t* ipc_jq_new(proc_t* proc) {
  *      jobqueue by passing it to a function defined in jobqueue.h)
  */
 size_t ipc_jq_capacity(ipc_jobqueue_t* ijq) {
-    return 0;
+    if (!ijq)
+        return NULL;
+    return jq_capacity((jobqueue_t*) ijq->addr);
 }
 
 /* 
@@ -37,7 +39,9 @@ size_t ipc_jq_capacity(ipc_jobqueue_t* ijq) {
  * - and remember you must call do_critical_work after dequeuing the job
  */
 job_t ipc_jq_dequeue(ipc_jobqueue_t* ijq) {
-    return UNUSED_ENTRY;
+    if (!ijq)
+        return UNUSED_ENTRY;
+    return jq_dequeue((jobqueue_t*) ijq->addr);
 }
 
 /* 
@@ -46,7 +50,7 @@ job_t ipc_jq_dequeue(ipc_jobqueue_t* ijq) {
  * - see ipc_jq_dequeue hint
  */
 void ipc_jq_enqueue(ipc_jobqueue_t* ijq, job_t j) {
-    return;
+    return jq_enqueue((jobqueue_t*) ijq->addr, j);
 }
     
 /* 
@@ -55,7 +59,9 @@ void ipc_jq_enqueue(ipc_jobqueue_t* ijq, job_t j) {
  * - see ipc_jq_dequeue hint
  */
 bool ipc_jq_is_empty(ipc_jobqueue_t* ijq) {
-    return true;
+    if (!ijq)
+        return NULL;
+    return jq_is_empty((jobqueue_t*) ijq->addr);
 }
 
 /* 
@@ -64,7 +70,9 @@ bool ipc_jq_is_empty(ipc_jobqueue_t* ijq) {
  * - see ipc_jq_dequeue hint
  */
 bool ipc_jq_is_full(ipc_jobqueue_t* ijq) {
-    return true;
+    if (!ijq)
+        return NULL;
+    return jq_is_full((jobqueue_t*) ijq->addr);
 }
 
 /* 
@@ -73,7 +81,9 @@ bool ipc_jq_is_full(ipc_jobqueue_t* ijq) {
  * - see ipc_jq_dequeue hint
  */
 job_t ipc_jq_peekhead(ipc_jobqueue_t* ijq) {
-    return UNUSED_ENTRY;
+    if (!ijq)
+        return UNUSED_ENTRY;
+    return jq_peekhead((jobqueue_t*) ijq->addr);
 }
     
 /* 
@@ -82,7 +92,9 @@ job_t ipc_jq_peekhead(ipc_jobqueue_t* ijq) {
  * - see ipc_jq_dequeue hint
  */
 job_t ipc_jq_peektail(ipc_jobqueue_t* ijq) {
-    return UNUSED_ENTRY;
+    if (!ijq)
+        return UNUSED_ENTRY;
+    return jq_peektail((jobqueue_t*) ijq->addr);
 }
 
 /* 
@@ -91,5 +103,5 @@ job_t ipc_jq_peektail(ipc_jobqueue_t* ijq) {
  * - look at how the ipc_jobqueue is allocated in ipc_jq_new
  */
 void ipc_jq_delete(ipc_jobqueue_t* ijq) {
-    return;
+    ipc_delete(ijq);
 }
