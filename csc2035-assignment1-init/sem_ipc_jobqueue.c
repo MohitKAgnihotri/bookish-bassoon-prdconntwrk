@@ -115,7 +115,7 @@ sem_ipc_jobqueue_t* sem_ijq_new(proc_t* proc) {
  * sem_ipc_jobqueue.h
  */
 size_t sem_ijq_capacity(sem_ipc_jobqueue_t* sijq) {
-    return 0;
+    return ipc_jq_capacity(sijq->ijq);
 }
 
 /* 
@@ -123,7 +123,12 @@ size_t sem_ijq_capacity(sem_ipc_jobqueue_t* sijq) {
  * sem_ipc_jobqueue.h
  */
 job_t sem_ijq_dequeue(sem_ipc_jobqueue_t* sijq) {
-    return UNUSED_ENTRY;
+    sem_wait(sijq->full);
+    sem_wait(sijq->mutex);
+    job_t dequeued_job = ipc_jq_dequeue(sijq->ijq);
+    sem_post(sijq->mutex);
+    sem_post(sijq->empty);
+    return dequeued_job;
 }
 
 /* 
@@ -131,6 +136,11 @@ job_t sem_ijq_dequeue(sem_ipc_jobqueue_t* sijq) {
  * sem_ipc_jobqueue.h
  */
 void sem_ijq_enqueue(sem_ipc_jobqueue_t* sijq, job_t j) {
+    sem_wait(sijq->empty);
+    sem_wait(sijq->mutex);
+    ipc_jq_enqueue(sijq->ijq, j);
+    sem_post(sijq->mutex);
+    sem_post(sijq->full);
     return;
 }
 
@@ -139,7 +149,10 @@ void sem_ijq_enqueue(sem_ipc_jobqueue_t* sijq, job_t j) {
  * sem_ipc_jobqueue.h
  */
 bool sem_ijq_is_empty(sem_ipc_jobqueue_t* sijq) {
-    return false;
+    sem_wait(sijq->mutex);
+    bool isempty = ipc_jq_is_empty(sijq->ijq);
+    sem_post(sijq->mutex);
+    return isempty;
 }
 
 /* 
@@ -147,7 +160,10 @@ bool sem_ijq_is_empty(sem_ipc_jobqueue_t* sijq) {
  * sem_ipc_jobqueue.h
  */
 bool sem_ijq_is_full(sem_ipc_jobqueue_t* sijq) {
-    return false;
+    sem_wait(sijq->mutex);
+    bool isfull  =  ipc_jq_is_full(sijq->ijq);
+    sem_post(sijq->mutex);
+    return isfull;
 }
 
 /* 
@@ -155,7 +171,10 @@ bool sem_ijq_is_full(sem_ipc_jobqueue_t* sijq) {
  * sem_ipc_jobqueue.h
  */
 job_t sem_ijq_peekhead(sem_ipc_jobqueue_t* sijq) {
-    return UNUSED_ENTRY;
+    sem_wait(sijq->mutex);
+    job_t head_job  =  ipc_jq_peekhead(sijq->ijq);
+    sem_post(sijq->mutex);
+    return head_job;
 }
 
 /* 
@@ -163,7 +182,10 @@ job_t sem_ijq_peekhead(sem_ipc_jobqueue_t* sijq) {
  * sem_ipc_jobqueue.h
  */
 job_t sem_ijq_peektail(sem_ipc_jobqueue_t* sijq) {
-    return UNUSED_ENTRY;
+    sem_wait(sijq->mutex);
+    job_t tail_job  =  ipc_jq_peektail(sijq->ijq);
+    sem_post(sijq->mutex);
+    return tail_job;
 }
 
 /* 
@@ -173,6 +195,10 @@ job_t sem_ijq_peektail(sem_ipc_jobqueue_t* sijq) {
  * - look at what is allocated and/or opened in sem_ijq_new
  */
 void sem_ijq_delete(sem_ipc_jobqueue_t* sijq) {
-    return;
+    sem_delete(sijq->empty,sem_empty_label);
+    sem_delete(sijq->mutex,sem_mutex_label);
+    sem_delete(sijq->full,sem_full_label);
+    ipc_jq_delete(sijq->ijq);
+    free(sijq);
 }
  
