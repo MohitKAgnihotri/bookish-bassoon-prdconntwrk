@@ -15,7 +15,7 @@ void jq_init(jobqueue_t* jq) {
     jq->head = 0;
     jq->tail = 0;
     jq->buf_size = JOBQ_BUF_SIZE;
-    
+
     for (int i = 0; i < jq->buf_size; i++)
         jq->jobs[i] = UNUSED_ENTRY;
 }
@@ -26,7 +26,10 @@ void jq_init(jobqueue_t* jq) {
  */
 jobqueue_t* jq_new() {
     jobqueue_t* newjq = (jobqueue_t*) malloc(sizeof(jobqueue_t));
-    jq_init(newjq);
+    if (newjq)
+    {
+        jq_init(newjq);
+    }
     return newjq;
 }
 

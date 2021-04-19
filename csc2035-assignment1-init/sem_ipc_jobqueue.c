@@ -200,5 +200,6 @@ void sem_ijq_delete(sem_ipc_jobqueue_t* sijq) {
     sem_delete(sijq->full,sem_full_label);
     ipc_jq_delete(sijq->ijq);
     free(sijq);
+    sijq = NULL;
 }
  

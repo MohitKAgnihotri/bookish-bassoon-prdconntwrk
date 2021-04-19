@@ -25,8 +25,7 @@ void shobject_name(char* name_buf, const char* label) {
     if (!label || !label[0])
         label = "none";
 
-    snprintf(name_buf, MAX_SHOBJ_NAME_SIZE, SHOBJ_NAME_FORMAT,
-             user, label);
+    snprintf(name_buf, MAX_SHOBJ_NAME_SIZE, SHOBJ_NAME_FORMAT, user, label);
 
     return;
 }

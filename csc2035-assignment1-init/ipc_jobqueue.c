@@ -48,6 +48,7 @@ job_t ipc_jq_dequeue(ipc_jobqueue_t* ijq) {
  * - see ipc_jq_dequeue hint
  */
 void ipc_jq_enqueue(ipc_jobqueue_t* ijq, job_t j) {
+    if (!ijq) return;
     return jq_enqueue((jobqueue_t*) ijq->addr, j);
 }
     
@@ -58,7 +59,7 @@ void ipc_jq_enqueue(ipc_jobqueue_t* ijq, job_t j) {
  */
 bool ipc_jq_is_empty(ipc_jobqueue_t* ijq) {
     if (!ijq)
-        return NULL;
+        return false;
     return jq_is_empty((jobqueue_t*) ijq->addr);
 }
 
